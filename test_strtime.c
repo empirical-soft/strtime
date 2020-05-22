@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Empirical Software Solutions, LLC
+ * Copyright (C) 2019--2020 Empirical Software Solutions, LLC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -177,6 +177,11 @@ int main() {
   verify_i("2017-01-01 12:20:55", "%Y-%m-%d %H:%M:%S");
   verify_i("2017-01-01 12:20:55.455763", "%Y-%m-%d %H:%M:%S.%f");
 
+  verify_gm(46, 5, 4);
+  verify_gm(67, 0, 1);
+  verify_gm(68, 1, 28);
+  verify_gm(68, 1, 29);
+  verify_gm(68, 2, 1);
   verify_gm(70, 0, 1);
   verify_gm(72, 1, 28);
   verify_gm(72, 1, 29);
