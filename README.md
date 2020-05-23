@@ -40,12 +40,13 @@ strptime_ns(timestr, format, &tm_, &nanos);
 strftime_ns(buffer, sizeof(buffer), format, &tm_, nanos);
 ```
 
-### Fast timegm
+### Fast timegm() and gmtime()
 
-The system `timegm()` handles quirks of the Gregorian calendar that we don't need. This library offers a much faster version.
+The system `timegm()` handles quirks of the Gregorian calendar that we don't need. Similarly, the system `gmtime()` on Windows does not handle negative clocks (pre-epoch dates). This library offers faster functions that can handle a fuller range of timestamps.
 
 ```
-time_t result = fast_timegm(&tm_);
+time_t clock = fast_timegm(&tm_);
+fast_gmtime(&clock, &tm_);
 ```
 
 By necessity, this only works for UTC; timezones and daylight savings are too costly.

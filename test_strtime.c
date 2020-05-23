@@ -142,6 +142,31 @@ static void verify_gm(int year, int month, int day) {
   }
 }
 
+/* check that expected struct tm matches */
+static void verify_tm(time_t seconds) {
+  struct tm result, expected;
+  char str_result[80], str_expected[80];
+
+  memset(&result, 0, sizeof(result));
+  fast_gmtime(&seconds, &result);
+
+  memset(&expected, 0, sizeof(expected));
+#ifdef _MSC_VER
+  gmtime_s(&expected, &seconds);
+#else /* _MSC_VER */
+  gmtime_r(&seconds, &expected);
+#endif /* _MSC_VER */
+
+  char format[] = "%Y-%m-%d %H:%M:%S";
+  strftime_ns(str_result, sizeof(str_result), format, &result, 0);
+  strftime_ns(str_expected, sizeof(str_expected), format, &expected, 0);
+
+  if (strcmp(str_result, str_expected) != 0) {
+    printf("%ld -- %s vs %s\n", seconds, str_expected, str_result);
+    main_return = 1;
+  }
+}
+
 int main() {
   main_return = 0;
 
@@ -192,6 +217,17 @@ int main() {
   verify_gm(105, 3, 8);
   verify_gm(112, 7, 31);
   verify_gm(117, 11, 30);
+
+  verify_tm(-746625600);
+  verify_tm(-94564800);
+  verify_tm(-58104000);
+  verify_tm(-58017600);
+  verify_tm(-57931200);
+  verify_tm(0);
+  verify_tm(68126400);
+  verify_tm(68212800);
+  verify_tm(68299200);
+  verify_tm(1553491824);
 
   return main_return;
 }
